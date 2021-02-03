@@ -47,14 +47,6 @@ function App() {
         // user has logged in...
         console.log(authUser);
         setUser(authUser);
-
-        if (authUser.displayName) {
-          //dont update username
-        } else {
-          return authUser.updateProfile({
-            displayName: username,
-          });
-        }
       } else {
         //user has logged out...
         setUser(null);
@@ -88,7 +80,9 @@ function App() {
         })
       })
       .catch((error) => alert(error.message));
+    setOpen(false);
   }
+
   const signIn = (event) => {
     event.preventDefault();
 
@@ -100,11 +94,6 @@ function App() {
 
   return (
     <div className="app">
-      {user?.displayName ? (
-        <ImageUpload username={user.displayName} />
-      ) : (
-        <h3>Sorry you need to login to upload</h3>
-      )}
 
       <Modal
         open={open}
@@ -179,15 +168,30 @@ function App() {
             </div>
           )}
       </div>
-      <h1>Instagram</h1>
 
       {/* Posts */}
-      {
-        posts.map(({ id, post }) => (
-          <Post key={id} username={post.username} caption={post.caption} imageUrl={post.imageUrl} />
-        )
-      )
-      }
+      <div className="app__posts">
+        <div>
+          {
+            posts.map(({ id, post }) => (
+              <Post
+                key={id}
+                postId={id}
+                user={user}
+                username={post.username}
+                caption={post.caption}
+                imageUrl={post.imageUrl} />
+            )
+            )
+          }
+        </div>
+      </div>
+
+      {user?.displayName ? (
+        <ImageUpload username={user.displayName} />
+      ) : (
+          <h3>Sorry you need to login to upload</h3>
+        )}
 
     </div >
   );
